@@ -26,7 +26,8 @@ form { border: 3px solid #8ed2e8; padding: 0 1em 0; }
 <p>First, if you already imported your schedule directly, delete those events from the receiving calendar. (This script can only de-duplicate against repeated runs of itself, not against previous random UIDs.)</p>
 <p>Next, get your ICS file, e.g. from the Nine Worlds <a href="https://sites.grenadine.co/sites/nineworlds/en/2018/my-account#schedule">My Schedule</a> page. The button says "Download these events to your calendar". Then submit that file below and I'll give you a version with more stable UIDs, which you can then import into your calendar. Repeat this process after you discover more sessions, and enjoy fewer duplicates. :-)</p>
 <form method='post' enctype='multipart/form-data'>
-<p><input type='file' name='ics'/> <small>(won't be saved, just adjusted and sent back to you)</small></p>
+<p><input type='file' name='ics'/><br/><small>(won't be saved, just adjusted and sent back to you)</small></p>
+<p><input type='checkbox' name='public' id='public'>&nbsp;<label for='public'>Make events public</label></p>
 <p><input type='submit' value='Fix it'/></p>
 </form>
 <h2>Who made this?</h2>

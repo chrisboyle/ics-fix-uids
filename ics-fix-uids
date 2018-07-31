@@ -21,6 +21,8 @@ if 'ics' in form and form['ics'].file:
             raise ValueError('event lacked summary and/or dtstart: ' + str(event))
         to_hash = str(dtstart.to_ical()) + '/' + str(summary.to_ical())
         event['UID'] = hashlib.sha256(to_hash.encode('utf-8')).hexdigest() + '@' + DOMAIN
+        if 'public' in form:
+            event['CLASS'] = 'PUBLIC'
     print('Content-Type: text/calendar; charset=utf-8\nContent-Disposition: attachment; filename="fixed_' + form['ics'].filename + '"\n')
     print(cal.to_ical().decode('utf-8'), end='')
 
