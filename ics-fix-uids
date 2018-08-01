@@ -36,6 +36,8 @@ if ics:
             raise ValueError('event lacked summary and/or dtstart: ' + str(event))
         to_hash = str(dtstart.to_ical()) + '/' + str(summary.to_ical())
         event['UID'] = hashlib.sha256(to_hash.encode('utf-8')).hexdigest() + '@' + DOMAIN
+        summary = summary.replace(' | Nine Worlds 2018', '').strip()
+        event['SUMMARY'] = summary
         if 'public' in form or '--public' in sys.argv:
             event['CLASS'] = 'PUBLIC'
         paras = event['DESCRIPTION'].split('\n\n', 2)
@@ -44,7 +46,7 @@ if ics:
             event['LOCATION'] = paras[1]
             event['DESCRIPTION'] = paras[2]
         html = '<br/><br/>'.join(map(lambda p: escape(p.strip()), filter(lambda x: x, event['DESCRIPTION'].split('\n'))))
-        extra = nw_extra.get(summary.split(' | ', 1)[0].strip())
+        extra = nw_extra.get(summary)
         if extra:
             event['DESCRIPTION'] += ''.join(map(lambda e: '\n\n' + e['url'], extra))
             html += '<br/><br/>' + '<br/><br/>'.join(map(lambda e: '<a href="' + e['url'] + '">Event info</a>', extra))
