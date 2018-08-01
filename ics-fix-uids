@@ -9,9 +9,16 @@ sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
 cgitb.enable()
 
 form = cgi.FieldStorage()
+ics = None
 if 'ics' in form and form['ics'].file:
+    ics = form['ics'].file.read()
+elif len(sys.argv) > 1:
+    with open(sys.argv[1], 'r') as f:
+        ics = f.read()
+
+if ics:
     try:
-        cal = Calendar.from_ical(form['ics'].file.read())
+        cal = Calendar.from_ical(ics)
     except Exception as ex:
         raise ValueError("Couldn't load that as an ical file") from ex
     for event in cal.walk('VEVENT'):
@@ -23,7 +30,8 @@ if 'ics' in form and form['ics'].file:
         event['UID'] = hashlib.sha256(to_hash.encode('utf-8')).hexdigest() + '@' + DOMAIN
         if 'public' in form:
             event['CLASS'] = 'PUBLIC'
-    print('Content-Type: text/calendar; charset=utf-8\nContent-Disposition: attachment; filename="fixed_' + form['ics'].filename + '"\n')
+    if 'ics' in form:
+        print('Content-Type: text/calendar; charset=utf-8\nContent-Disposition: attachment; filename="fixed_' + form['ics'].filename + '"\n')
     print(cal.to_ical().decode('utf-8'), end='')
 
 else:
