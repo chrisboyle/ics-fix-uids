@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import cgi, cgitb, codecs, hashlib, json, re, shutil, sys
-from icalendar import Calendar, vCalAddress
+from html import escape
+from icalendar import Calendar, vCalAddress, vText
 
 DOMAIN = 'chris.boyle.name'
 
@@ -42,11 +43,14 @@ if ics:
             # Grenadine special case
             event['LOCATION'] = paras[1]
             event['DESCRIPTION'] = paras[2]
+        html = '<br/><br/>'.join(map(lambda p: escape(p.strip()), filter(lambda x: x, event['DESCRIPTION'].split('\n'))))
         extra = nw_extra.get(summary.split(' | ', 1)[0].strip())
         if extra:
             event['DESCRIPTION'] += ''.join(map(lambda e: '\n\n' + e['url'], extra))
-            if len(extra) == 1:
+            html += '<br/><br/>' + '<br/><br/>'.join(map(lambda e: '<a href="' + e['url'] + '">Event info</a>', extra))
+            if len(extra) == 1 and extra[0]['speakers']:
                 event['DESCRIPTION'] += ''.join(map(lambda s: '\n\n' + s['name'] + (' (moderator)' if s['moderator'] else '') + '\n' + s['url'], extra[0]['speakers']))
+                html += '<br/><br/><ul>' + '\n'.join(map(lambda s: '<li><a href="' + s['url'] + '">' + s['name'] + (' (moderator)' if s['moderator'] else '') + '</a></li>', extra[0]['speakers'])) + '</ul>'
                 #for s in extra[0]['speakers']:
                 #    att = vCalAddress(re.sub(r'[^\w]+', '_', s['name']) + '@address-unknown.invalid')
                 #    att.params['CN'] = s['name']
@@ -55,6 +59,13 @@ if ics:
                 #    if s['moderator']:
                 #        att.params['ROLE'] = 'CHAIR'
                 #    event.add('attendee', att, encode=0)
+        html = '<!DOCTYPE html><html><body>' + html + '</body></html>'
+        if 'forcehtml' in form or '--forcehtml' in sys.argv:
+            event['DESCRIPTION'] = html
+        else:
+            htmlDesc = vText(html)
+            htmlDesc.params['fmttype'] = 'text/html'
+            event.add('x-alt-desc', htmlDesc)
     if 'ics' in form:
         print('Content-Type: text/calendar; charset=utf-8\nContent-Disposition: attachment; filename="fixed_' + form['ics'].filename + '"\n')
     print(cal.to_ical().decode('utf-8'), end='')
