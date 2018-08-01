@@ -16,6 +16,7 @@ form { border: 3px solid #8ed2e8; padding: 0 1em 0; }
 <p>Firstly, if you just want the schedule on your phone, the <a href="https://twitter.com/London_Geekfest/status/1023293077514084354">official mobile apps</a> will do that without anything like this. But if you do want to sync your events into e.g. Google Calendar and are already familiar with ICS export/import&hellip;</h2>
 <p>You may have noticed that Grenadine has an ICS export feature. The problem is, if you use it <strong>more than once</strong>, you get duplicate events. This is because it seems to generate the event UIDs randomly during each export, so the receiving calendar thinks each event is new every time.</p>
 <p>So I made this horrible work-around, which you can pass your ICS file through, to try and make the IDs consistent. It's a few extra steps but it means that repeated export/import should no longer cause duplicates.</p>
+<p>While I'm at it I put the location in the location field, and you have the option of making the events public.</p>
 <h2>Limitations</h2>
 <ul>
 <li><strong>No warranty, express or implied.</strong> Don't blame me if this eats your calendar or causes other Bad Stuff.</li>

@@ -28,8 +28,13 @@ if ics:
             raise ValueError('event lacked summary and/or dtstart: ' + str(event))
         to_hash = str(dtstart.to_ical()) + '/' + str(summary.to_ical())
         event['UID'] = hashlib.sha256(to_hash.encode('utf-8')).hexdigest() + '@' + DOMAIN
-        if 'public' in form:
+        if 'public' in form or '--public' in sys.argv:
             event['CLASS'] = 'PUBLIC'
+        paras = event['DESCRIPTION'].split('\n\n', 2)
+        if len(paras) == 3 and paras[0] == 'Item in personal schedule':
+            # Grenadine special case
+            event['LOCATION'] = paras[1]
+            event['DESCRIPTION'] = paras[2]
     if 'ics' in form:
         print('Content-Type: text/calendar; charset=utf-8\nContent-Disposition: attachment; filename="fixed_' + form['ics'].filename + '"\n')
     print(cal.to_ical().decode('utf-8'), end='')
