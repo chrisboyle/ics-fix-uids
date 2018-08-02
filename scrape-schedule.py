@@ -22,10 +22,15 @@ for item in soup.select('#timeline .list-item'):
         'speakers': []
     }
     first_sp = True
+    seen = set()
     for speaker in item.select('.list-item-speakers-container .speaker'):
+        name = speaker.get_text().strip()
+        if name in seen:
+            continue
+        seen.add(name)
         itemOut['speakers'].append({
             'moderator': bool(first_sp and speaker.find_previous_sibling('span', text='Moderator')),
-            'name': speaker.get_text().strip(),
+            'name': name,
             'url': speaker.a['href'],
         })
         first_sp = False
