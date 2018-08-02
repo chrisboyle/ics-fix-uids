@@ -17,6 +17,7 @@ form { border: 3px solid #8ed2e8; padding: 0 1em 0; }
 <p>You may have noticed that Grenadine has an ICS export feature. The problem is, if you use it <strong>more than once</strong>, you get duplicate events. This is because it seems to generate the event UIDs randomly during each export, so the receiving calendar thinks each event is new every time.</p>
 <p>So I made this horrible work-around, which you can pass your ICS file through, to try and make the IDs consistent. It's a few extra steps but it means that repeated export/import should no longer cause duplicates.</p>
 <p>While I'm at it I put the location in the location field, and you have the option of making the events public.</p>
+<p>I've also added the event link and speaker information to events (from a cached copy updated daily).</p>
 <h2>Limitations</h2>
 <ul>
 <li><strong>No warranty, express or implied.</strong> Don't blame me if this eats your calendar or causes other Bad Stuff.</li>
